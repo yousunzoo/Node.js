@@ -75,14 +75,14 @@ var app = http.createServer(function (request, response) {
 
       var template = templateHTML(title, list, `
       <form action="/create_process" method="POST">
-  <p><input type="text" name="title" placeholder="title"></p>
-<p>
-  <textarea name="description" placeholder="description"></textarea>
-</p>
-<p>
-  <input type="submit">
-</p>
-</form>
+      <p><input type="text" name="title" placeholder="title"></p>
+      <p>
+        <textarea name="description" placeholder="description"></textarea>
+      </p>
+      <p>
+        <input type="submit">
+      </p>
+      </form>
       `, '');
       response.writeHead(200);
       response.end(template);
@@ -127,7 +127,6 @@ var app = http.createServer(function (request, response) {
       body = body + data;
     });
     request.on('end', function(){
-      var post = qs.parse(body);
       var id = new URLSearchParams(body).get('id');
       var title = new URLSearchParams(body).get('title');
       var description = new URLSearchParams(body).get('description');
@@ -138,6 +137,18 @@ var app = http.createServer(function (request, response) {
         });
       });
 
+    });
+  }  else if(pathname === '/delete_process'){
+    var body = '';
+    request.on('data', function(data){
+      body = body + data;
+    });
+    request.on('end', function(){
+      var id = new URLSearchParams(body).get('id');
+      fs.unlink(`data/${id}`, function(error){
+        response.writeHead(302, {Location : `/`});
+        response.end();
+      })
     });
   } else {
     response.writeHead(404);
