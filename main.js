@@ -88,11 +88,12 @@ var app = http.createServer(function (request, response) {
     request.on('end', function(){
       var title = new URLSearchParams(body).get('title');
       var description = new URLSearchParams(body).get('description');
+      fs.writeFile(`data/${title}`, description, 'utf8', function(err){
+        response.writeHead(302, {Location : `/?id=${title}`});
+        response.end();
+      });
 
-      console.log(title, description)
     });
-    response.writeHead(200);
-    response.end('success');
   } else {
     response.writeHead(404);
     response.end('Not found');
